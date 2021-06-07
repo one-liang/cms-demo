@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container mt-4">
     <form
       class="form-signin"
       @submit.prevent="signIn"
@@ -66,7 +66,7 @@ export default {
           const { token, expired } = res.data;
           document.cookie = `myToken=${token}; expires=${new Date(expired)}`;
           if (res.data.success) {
-            this.$router.push('/dashboard');
+            this.$router.push('/dashboard/products');
           }
         })
         .catch((error) => console.log(error));
