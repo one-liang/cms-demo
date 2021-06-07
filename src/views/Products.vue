@@ -1,6 +1,6 @@
 <template>
   <div class="text-end">
-    <button @click="openModal" class="btn btn-primary" type="button">
+    <button @click="openModal(true)" class="btn btn-primary" type="button">
       新增產品
     </button>
   </div>
@@ -27,14 +27,23 @@
         </td>
         <td>
           <div class="btn-group">
-            <button class="btn btn-outline-primary btn-sm">編輯</button>
+            <button
+              @click="openModal(false, product)"
+              class="btn btn-outline-primary btn-sm"
+            >
+              編輯
+            </button>
             <button class="btn btn-outline-danger btn-sm">刪除</button>
           </div>
         </td>
       </tr>
     </tbody>
   </table>
-  <ProductModal ref="productModal" :product="tempProduct" @update-product="updateProduct" />
+  <ProductModal
+    ref="productModal"
+    :product="tempProduct"
+    @update-product="updateProduct"
+  />
 </template>
 
 <script>
@@ -50,6 +59,7 @@ export default {
       products: [],
       pagination: {},
       tempProduct: {},
+      isNew: false,
     };
   },
   created() {
@@ -58,7 +68,8 @@ export default {
   methods: {
     getProducts() {
       const api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/products`;
-      this.axios.get(api)
+      this.axios
+        .get(api)
         .then((res) => {
           if (res.data.success) {
             console.log('products: ', res.data);
@@ -68,14 +79,25 @@ export default {
         })
         .catch((error) => console.log(error));
     },
-    openModal() {
-      this.tempProduct = {};
+    openModal(isNew, item) {
+      console.log(isNew, item);
+      if (isNew) {
+        this.tempProduct = {};
+      } else {
+        this.tempProduct = { ...item };
+      }
+      this.isNew = isNew;
       this.$refs.productModal.showModal();
     },
     updateProduct(item) {
       this.tempProduct = item;
-      const api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product`;
-      this.axios.post(api, { data: this.tempProduct })
+      let api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product`;
+      let httpMethod = 'post';
+      if (!this.isNew) {
+        api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product/${item.id}`;
+        httpMethod = 'put';
+      }
+      this.axios[httpMethod](api, { data: this.tempProduct })
         .then((res) => {
           console.log('updateProduct: ', res);
           this.$refs.productModal.hideModal();
