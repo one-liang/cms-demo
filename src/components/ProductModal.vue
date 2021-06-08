@@ -177,10 +177,11 @@
 </template>
 
 <script>
-import Modal from 'bootstrap/js/dist/modal';
+import ModalMixin from '@/mixins/modalMixin';
 
 export default {
   name: 'ProductModal',
+  mixins: [ModalMixin],
   props: {
     product: {
       type: Object,
@@ -198,16 +199,7 @@ export default {
       tempProduct: {},
     };
   },
-  mounted() {
-    this.modal = new Modal(this.$refs.modal);
-  },
   methods: {
-    showModal() {
-      this.modal.show();
-    },
-    hideModal() {
-      this.modal.hide();
-    },
     uploadFile() {
       const uploadFile = this.$refs.imgUpload.files[0];
       // console.dir(uploadFile);

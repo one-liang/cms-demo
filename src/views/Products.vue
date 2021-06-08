@@ -33,7 +33,12 @@
             >
               編輯
             </button>
-            <button class="btn btn-outline-danger btn-sm">刪除</button>
+            <button
+              @click="$refs.deleteProductModal.showModal()"
+              class="btn btn-outline-danger btn-sm"
+            >
+              刪除
+            </button>
           </div>
         </td>
       </tr>
@@ -44,15 +49,18 @@
     :product="tempProduct"
     @update-product="updateProduct"
   />
+  <DeleteProductModal ref="deleteProductModal" />
 </template>
 
 <script>
+import DeleteProductModal from '../components/DeleteProductModal.vue';
 import ProductModal from '../components/ProductModal.vue';
 
 export default {
   name: 'Products',
   components: {
     ProductModal,
+    DeleteProductModal,
   },
   data() {
     return {
