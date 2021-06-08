@@ -63,6 +63,7 @@ export default {
     ProductModal,
     DeleteProductModal,
   },
+  inject: ['emitter'],
   data() {
     return {
       products: [],
@@ -123,7 +124,19 @@ export default {
         .then((res) => {
           console.log('updateProduct: ', res);
           this.$refs.productModal.hideModal();
-          this.getProducts();
+          if (res.data.success) {
+            this.getProducts();
+            this.emitter.emit('push-message', {
+              style: 'success',
+              title: '更新成功',
+            });
+          } else {
+            this.emitter.emit('push-message', {
+              style: 'danger',
+              title: '更新失敗',
+              content: res.data.message.join('、'),
+            });
+          }
         })
         .catch((error) => console.log(error));
     },
