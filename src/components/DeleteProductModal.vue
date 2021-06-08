@@ -16,7 +16,7 @@
             aria-label="Close"
           ></button>
         </div>
-        <div class="modal-body">...</div>
+        <div class="modal-body">{{ tempProduct }}</div>
         <div class="modal-footer">
           <button
             type="button"
@@ -38,6 +38,17 @@ import ModalMixin from '@/mixins/modalMixin';
 export default {
   name: 'DeleteProductModal',
   mixins: [ModalMixin],
+  props: {
+    product: {
+      type: Object,
+      default: () => {},
+    },
+  },
+  watch: {
+    product() {
+      this.tempProduct = this.product;
+    },
+  },
   data() {
     return {
       modal: {},

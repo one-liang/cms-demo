@@ -34,7 +34,7 @@
               編輯
             </button>
             <button
-              @click="$refs.deleteProductModal.showModal()"
+              @click="delModal(product)"
               class="btn btn-outline-danger btn-sm"
             >
               刪除
@@ -49,7 +49,7 @@
     :product="tempProduct"
     @update-product="updateProduct"
   />
-  <DeleteProductModal ref="deleteProductModal" />
+  <DeleteProductModal ref="deleteProductModal" :product="tempProduct" />
 </template>
 
 <script>
@@ -96,6 +96,11 @@ export default {
       }
       this.isNew = isNew;
       this.$refs.productModal.showModal();
+    },
+    delModal(item) {
+      // console.log(item);
+      this.tempProduct = { ...item };
+      this.$refs.deleteProductModal.showModal();
     },
     updateProduct(item) {
       this.tempProduct = item;
