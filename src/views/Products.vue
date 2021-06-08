@@ -1,4 +1,5 @@
 <template>
+  <Loading :active="isLoading"  />
   <div class="text-end">
     <button @click="openModal(true)" class="btn btn-primary" type="button">
       新增產品
@@ -68,6 +69,7 @@ export default {
       pagination: {},
       tempProduct: {},
       isNew: false,
+      isLoading: false,
     };
   },
   created() {
@@ -76,9 +78,11 @@ export default {
   methods: {
     getProducts() {
       const api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/products`;
+      this.isLoading = true;
       this.axios
         .get(api)
         .then((res) => {
+          this.isLoading = false;
           if (res.data.success) {
             console.log('products: ', res.data);
             this.products = res.data.products;
