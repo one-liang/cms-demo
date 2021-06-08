@@ -30,7 +30,13 @@
                   >或 上傳圖片
                   <i class="fas fa-spinner fa-spin"></i>
                 </label>
-                <input type="file" id="customFile" class="form-control" />
+                <input
+                  ref="imgUpload"
+                  @change="uploadFile"
+                  type="file"
+                  id="customFile"
+                  class="form-control"
+                />
               </div>
               <img class="img-fluid" alt="" />
               <!-- 延伸技巧，多圖 -->
@@ -201,6 +207,24 @@ export default {
     },
     hideModal() {
       this.modal.hide();
+    },
+    uploadFile() {
+      const uploadFile = this.$refs.imgUpload.files[0];
+      // console.dir(uploadFile);
+      const formData = new FormData();
+      // 增加欄位名稱到表單
+      formData.append('file-to-upload', uploadFile);
+
+      const api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/upload`;
+      this.axios
+        .post(api, formData)
+        .then((res) => {
+          console.log(res.data);
+          if (res.data.success) {
+            this.tempProduct.imageUrl = res.data.imageUrl;
+          }
+        })
+        .catch((error) => console.log(error));
     },
   },
 };
