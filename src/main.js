@@ -6,9 +6,13 @@ import 'vue3-loading-overlay/dist/vue3-loading-overlay.css';
 import App from './App.vue';
 import router from './router';
 import store from './store';
+import { currency } from './methods/filters';
 
 const app = createApp(App);
 
+app.config.globalProperties.$filters = {
+  currency,
+};
 app.use(VueAxios, axios);
 app.component('Loading', Loading);
 app.use(store);
