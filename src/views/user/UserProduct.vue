@@ -48,6 +48,7 @@ export default {
     return {
       product: {},
       id: '',
+      loadingItem: '',
       isLoading: false,
     };
   },
@@ -72,7 +73,21 @@ export default {
         .catch((error) => console.log(error));
     },
     addToCart(id) {
-      console.log(id);
+      const api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart`;
+      const cart = {
+        product_id: id,
+        qty: 1,
+      };
+      this.loadingItem = id;
+      this.axios
+        .post(api, { data: cart })
+        .then((res) => {
+          this.isLoading = false;
+          if (res.data.success) {
+            console.log('addToCart: ', res.data);
+          }
+        })
+        .catch((error) => console.log(error));
     },
   },
 };

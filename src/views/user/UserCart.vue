@@ -13,7 +13,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in products" :key="item.id">
+            <tr v-for="product in products" :key="product.id">
               <td style="width: 200px">
                 <div
                   style="
@@ -21,25 +21,25 @@
                     background-size: cover;
                     background-position: center;
                   "
-                  :style="{ backgroundImage: `url(${item.imageUrl})` }"
+                  :style="{ backgroundImage: `url(${product.imageUrl})` }"
                 ></div>
               </td>
               <td>
                 <router-link
-                  :to="`/user/product/${item.id}`"
+                  :to="`/user/product/${product.id}`"
                   class="text-dark"
-                  >{{ item.title }}</router-link
+                  >{{ product.title }}</router-link
                 >
               </td>
               <td>
-                <div class="h5" v-if="!item.price">
-                  {{ item.origin_price }} 元
+                <div class="h5" v-if="!product.price">
+                  {{ product.origin_price }} 元
                 </div>
-                <del class="h6" v-if="item.price"
-                  >原價 {{ item.origin_price }} 元</del
+                <del class="h6" v-if="product.price"
+                  >原價 {{ product.origin_price }} 元</del
                 >
-                <div class="h5" v-if="item.price">
-                  現在只要 {{ item.price }} 元
+                <div class="h5" v-if="product.price">
+                  現在只要 {{ product.price }} 元
                 </div>
               </td>
               <td>
@@ -47,12 +47,24 @@
                   <button
                     type="button"
                     class="btn btn-outline-secondary"
-                    @click="getProduct(item.id)"
+                    @click="getProduct(product.id)"
                   >
                     查看更多
                   </button>
-                  <button type="button" class="btn btn-outline-danger">
-                    加到購物車
+                  <button
+                    @click="addToCart(product.id)"
+                    type="button"
+                    class="btn btn-outline-danger"
+                    :disabled="loadingItem === product.id"
+                  >
+                    <span v-if="loadingItem !== product.id">加到購物車</span>
+                    <div
+                      v-else
+                      class="spinner-border spinner-border-sm"
+                      role="status"
+                    >
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
                   </button>
                 </div>
               </td>
@@ -72,6 +84,7 @@ export default {
     return {
       products: [],
       isLoading: false,
+      loadingItem: '',
     };
   },
   created() {
@@ -94,6 +107,23 @@ export default {
     },
     getProduct(id) {
       this.$router.push(`/user/product/${id}`);
+    },
+    addToCart(id) {
+      const api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart`;
+      const cart = {
+        product_id: id,
+        qty: 1,
+      };
+      this.loadingItem = id;
+      this.axios
+        .post(api, { data: cart })
+        .then((res) => {
+          this.loadingItem = '';
+          if (res.data.success) {
+            console.log('addToCart: ', res.data);
+          }
+        })
+        .catch((error) => console.log(error));
     },
   },
 };
