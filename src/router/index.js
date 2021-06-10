@@ -32,6 +32,20 @@ const routes = [
       },
     ],
   },
+  {
+    path: '/user',
+    component: () => import('../views/user/UserDashboard.vue'),
+    children: [
+      {
+        path: 'cart',
+        component: () => import('../views/user/UserCart.vue'),
+      },
+      {
+        path: 'product/:productId',
+        component: () => import('../views/user/UserProduct.vue'),
+      },
+    ],
+  },
 ];
 
 const router = createRouter({
