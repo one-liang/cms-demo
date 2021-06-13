@@ -209,6 +209,7 @@ export default {
           this.loadingItem = '';
           if (res.data.success) {
             console.log('addToCart: ', res.data);
+            this.getCart();
           }
         })
         .catch((error) => console.log(error));
@@ -216,14 +217,24 @@ export default {
     getCart() {
       const api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart`;
       this.isLoading = true;
-      this.axios.get(api).then((response) => {
-        console.log('getCart: ', response);
-        this.cart = response.data.data;
-        this.isLoading = false;
+      this.axios.get(api).then((res) => {
+        if (res.data.success) {
+          this.isLoading = false;
+          console.log('getCart: ', res);
+          this.cart = res.data.data;
+        }
       });
     },
     removeCartItem(id) {
-      console.log('removeCartItem: ', id);
+      const api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart/${id}`;
+      this.isLoading = true;
+      this.axios.delete(api).then((res) => {
+        if (res.data.success) {
+          this.isLoading = false;
+          console.log('removeCartItem: ', res);
+          this.getCart();
+        }
+      });
     },
   },
 };
