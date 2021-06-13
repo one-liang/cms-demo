@@ -108,7 +108,10 @@
                       <input
                         type="number"
                         class="form-control"
+                        min="1"
+                        :disabled="loadingItem === item.id"
                         v-model.number="item.qty"
+                        @change="updateCart(item)"
                       />
                       <div class="input-group-text">
                         / {{ item.product.unit }}
@@ -222,6 +225,21 @@ export default {
           this.isLoading = false;
           console.log('getCart: ', res);
           this.cart = res.data.data;
+        }
+      });
+    },
+    updateCart(item) {
+      const api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart/${item.id}`;
+      const cart = {
+        product_id: item.product_id,
+        qty: item.qty,
+      };
+      this.loadingItem = item.id;
+      this.axios.put(api, { data: cart }).then((res) => {
+        if (res.data.success) {
+          this.loadingItem = '';
+          console.log('updateCart: ', res);
+          this.getCart();
         }
       });
     },
