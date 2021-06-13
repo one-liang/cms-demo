@@ -254,6 +254,21 @@ export default {
         }
       });
     },
+    // ! todo
+    addCouponCode() {
+      const api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/coupon`;
+      const coupon = {
+        code: this.coupon_code,
+      };
+      this.isLoading = true;
+      this.axios.post(api, { data: coupon }).then((res) => {
+        if (res.data.success) {
+          this.isLoading = false;
+          console.log('addCouponCode: ', res);
+          this.getCart();
+        }
+      });
+    },
   },
 };
 </script>
