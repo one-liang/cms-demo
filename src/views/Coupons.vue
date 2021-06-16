@@ -52,21 +52,21 @@
       ref="couponModal"
     />
     <DeleteModal :item="tempCoupon" ref="delModal" @del-item="delCoupon" />
-    <!-- <Pagination :pages="pagination" @emit-pages="getProducts" /> -->
+    <Pagination :pages="pagination" @emit-pages="getCoupons" />
   </div>
 </template>
 
 <script>
 import CouponModal from '@/components/CouponModal.vue';
 import DeleteModal from '@/components/DeleteModal.vue';
-// import ProductModal from '@/components/ProductModal.vue';
+import Pagination from '@/components/Pagination.vue';
 
 export default {
   name: 'Coupons',
   components: {
     CouponModal,
     DeleteModal,
-    // Pagination,
+    Pagination,
   },
   data() {
     return {
@@ -80,6 +80,7 @@ export default {
         code: '',
       },
       pagination: {},
+      currentPage: 1,
     };
   },
   inject: ['emitter'],
@@ -87,9 +88,10 @@ export default {
     this.getCoupons();
   },
   methods: {
-    getCoupons() {
-      console.log('getCoupons: ');
-      const api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/coupons`;
+    getCoupons(currentPage = 1) {
+      // console.log('getCoupons: ');
+      this.currentPage = currentPage;
+      const api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/coupons?page=${currentPage}`;
       this.isLoading = true;
       this.axios
         .get(api)
@@ -97,6 +99,7 @@ export default {
           if (res.data.success) {
             console.log('getCoupons: ', res.data);
             this.coupons = res.data.coupons;
+            this.pagination = res.data.pagination;
             this.isLoading = false;
           }
         })
@@ -131,7 +134,7 @@ export default {
           this.$refs.delModal.hideModal();
           if (res.data.success) {
             console.log('delCoupon: ', res.data);
-            this.getCoupons();
+            this.getCoupons(this.currentPage);
           }
         })
         .catch((error) => console.log(error));
@@ -143,7 +146,7 @@ export default {
         this.axios.post(url, { data: tempCoupon }).then((res) => {
           if (res.data.success) {
             console.log('新增優惠券: ', res.data);
-            this.getCoupons();
+            this.getCoupons(this.currentPage);
             this.emitter.emit('push-message', {
               style: 'success',
               title: '更新成功',
@@ -163,7 +166,7 @@ export default {
         this.axios.put(url, { data: this.tempCoupon }).then((res) => {
           if (res.data.success) {
             console.log('修改優惠券: ', res.data);
-            this.getCoupons();
+            this.getCoupons(this.currentPage);
             this.emitter.emit('push-message', {
               style: 'success',
               title: '更新成功',
