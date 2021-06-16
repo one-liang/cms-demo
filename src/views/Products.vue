@@ -96,7 +96,7 @@ export default {
         .catch((error) => console.log(error));
     },
     openModal(isNew, item) {
-      console.log(isNew, item);
+      console.log('openModal: ', isNew, item);
       if (isNew) {
         this.tempProduct = {};
       } else {
