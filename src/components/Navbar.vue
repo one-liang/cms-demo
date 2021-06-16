@@ -5,7 +5,7 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <router-link to="/dashboard/products" class="nav-link active">產品</router-link>
+            <router-link to="/dashboard/products" class="nav-link">產品</router-link>
           </li>
           <li class="nav-item">
             <router-link to="/dashboard/orders" class="nav-link">訂單</router-link>
