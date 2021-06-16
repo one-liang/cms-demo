@@ -142,7 +142,7 @@
               </tr>
             </tfoot>
           </table>
-          <div class="input-group mb-3 input-group-sm">
+          <div v-if="cart.carts" class="input-group mb-3 input-group-sm">
             <input
               type="text"
               class="form-control"
@@ -267,6 +267,7 @@ export default {
   created() {
     this.getProducts();
     this.getCart();
+    console.log(this.$route);
   },
   methods: {
     getProducts() {
@@ -362,6 +363,7 @@ export default {
       this.axios.post(api, { data: order })
         .then((res) => {
           console.log('createOrder: ', res);
+          this.$router.push(`user/checkout/${res.data.orderId}`);
         });
     },
   },
