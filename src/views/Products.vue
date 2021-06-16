@@ -55,16 +55,16 @@
 </template>
 
 <script>
-import DeleteModal from '../components/DeleteModal.vue';
-import Pagination from '../components/Pagination.vue';
-import ProductModal from '../components/ProductModal.vue';
+import Pagination from '@/components/Pagination.vue';
+import ProductModal from '@/components/ProductModal.vue';
+import DeleteModal from '@/components/DeleteModal.vue';
 
 export default {
   name: 'Products',
   components: {
+    Pagination,
     ProductModal,
     DeleteModal,
-    Pagination,
   },
   inject: ['emitter'],
   data() {
@@ -86,11 +86,11 @@ export default {
       this.axios
         .get(api)
         .then((res) => {
-          this.isLoading = false;
           if (res.data.success) {
             console.log('products: ', res.data);
             this.products = res.data.products;
             this.pagination = res.data.pagination;
+            this.isLoading = false;
           }
         })
         .catch((error) => console.log(error));
