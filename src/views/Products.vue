@@ -24,7 +24,7 @@
         <td class="text-right">{{ $filters.currency(product.price) }}</td>
         <td>
           <span v-if="product.is_enabled" class="text-success">啟用</span>
-          <span v-else class="text-muted">啟用</span>
+          <span v-else class="text-muted">未啟用</span>
         </td>
         <td>
           <div class="btn-group">
@@ -35,7 +35,7 @@
               編輯
             </button>
             <button
-              @click="delModal(product)"
+              @click="openDelModal(product)"
               class="btn btn-outline-danger btn-sm"
             >
               刪除
@@ -51,11 +51,11 @@
     :product="tempProduct"
     @update-product="updateProduct"
   />
-  <DeleteProductModal ref="deleteProductModal" :product="tempProduct" />
+  <DeleteModal ref="delModal" :item="tempProduct" @del-item="delProduct" />
 </template>
 
 <script>
-import DeleteProductModal from '../components/DeleteProductModal.vue';
+import DeleteModal from '../components/DeleteModal.vue';
 import Pagination from '../components/Pagination.vue';
 import ProductModal from '../components/ProductModal.vue';
 
@@ -63,7 +63,7 @@ export default {
   name: 'Products',
   components: {
     ProductModal,
-    DeleteProductModal,
+    DeleteModal,
     Pagination,
   },
   inject: ['emitter'],
@@ -105,11 +105,6 @@ export default {
       this.isNew = isNew;
       this.$refs.productModal.showModal();
     },
-    delModal(item) {
-      // console.log(item);
-      this.tempProduct = { ...item };
-      this.$refs.deleteProductModal.showModal();
-    },
     updateProduct(item) {
       this.tempProduct = item;
 
@@ -128,6 +123,34 @@ export default {
           console.log('updateProduct: ', res);
           this.$refs.productModal.hideModal();
           if (res.data.success) {
+            this.getProducts();
+            this.emitter.emit('push-message', {
+              style: 'success',
+              title: '更新成功',
+            });
+          } else {
+            this.emitter.emit('push-message', {
+              style: 'danger',
+              title: '更新失敗',
+              content: res.data.message.join('、'),
+            });
+          }
+        })
+        .catch((error) => console.log(error));
+    },
+    openDelModal(product) {
+      // console.log('openDelModal: ', product);
+      this.tempProduct = { ...product };
+      this.$refs.delModal.showModal();
+    },
+    delProduct() {
+      const api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product/${this.tempProduct.id}`;
+      this.axios
+        .delete(api)
+        .then((res) => {
+          this.$refs.delModal.hideModal();
+          if (res.data.success) {
+            console.log('delProduct: ', res.data);
             this.getProducts();
             this.emitter.emit('push-message', {
               style: 'success',
