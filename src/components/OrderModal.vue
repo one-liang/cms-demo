@@ -139,7 +139,6 @@ export default {
   },
   data() {
     return {
-      status: {},
       modal: '',
       tempOrder: {},
       isPaid: false,
