@@ -23,6 +23,7 @@
                   class="form-control"
                   id="image"
                   placeholder="請輸入圖片連結"
+                  v-model="tempProduct.imageUrl"
                 />
               </div>
               <div class="mb-3">
@@ -38,21 +39,38 @@
                   class="form-control"
                 />
               </div>
-              <img class="img-fluid" alt="" />
+              <img class="img-fluid mb-2" :src="tempProduct.imageUrl" />
               <!-- 延伸技巧，多圖 -->
-              <div class="mt-5">
-                <div class="mb-3 input-group">
+              <div class="mt-5" v-if="tempProduct.imagesUrl">
+                <div
+                  v-for="(image, index) in tempProduct.imagesUrl"
+                  class="mb-3 input-group"
+                  :key="index"
+                >
                   <input
                     type="url"
                     class="form-control form-control"
+                    v-model="tempProduct.imagesUrl[index]"
                     placeholder="請輸入連結"
                   />
-                  <button type="button" class="btn btn-outline-danger">
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger"
+                    @click="tempProduct.imagesUrl.splice(index, 1)"
+                  >
                     移除
                   </button>
                 </div>
-                <div>
-                  <button class="btn btn-outline-primary btn-sm d-block w-100">
+                <div
+                  v-if="
+                    tempProduct.imagesUrl[tempProduct.imagesUrl.length - 1] ||
+                    !tempProduct.imagesUrl.length
+                  "
+                >
+                  <button
+                    class="btn btn-outline-primary btn-sm d-block w-100"
+                    @click="tempProduct.imagesUrl.push('')"
+                  >
                     新增圖片
                   </button>
                 </div>
@@ -191,6 +209,11 @@ export default {
   watch: {
     product() {
       this.tempProduct = this.product;
+      // 多圖範例
+      console.log('watch product: ', this.tempProduct.imagesUrl);
+      if (!this.tempProduct.imagesUrl) {
+        this.tempProduct.imagesUrl = [];
+      }
     },
   },
   data() {
@@ -201,17 +224,17 @@ export default {
   },
   methods: {
     uploadFile() {
-      const uploadFile = this.$refs.imgUpload.files[0];
-      // console.dir(uploadFile);
+      const uploadedFile = this.$refs.imgUpload.files[0];
+      // console.dir(uploadedFile);
       const formData = new FormData();
       // 增加欄位名稱到表單
-      formData.append('file-to-upload', uploadFile);
+      formData.append('file-to-upload', uploadedFile);
 
       const api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/upload`;
       this.axios
         .post(api, formData)
         .then((res) => {
-          console.log(res.data);
+          console.log('uploadFile: ', res.data);
           if (res.data.success) {
             this.tempProduct.imageUrl = res.data.imageUrl;
           }
