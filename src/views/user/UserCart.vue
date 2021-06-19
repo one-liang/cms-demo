@@ -129,7 +129,7 @@
                 </tr>
               </template>
             </tbody>
-            <tfoot>
+            <tfoot v-if="cart.total">
               <tr>
                 <td colspan="3" class="text-end">總計</td>
                 <td class="text-end">{{ $filters.currency(cart.total) }}</td>
@@ -142,7 +142,7 @@
               </tr>
             </tfoot>
           </table>
-          <div v-if="cart.carts" class="input-group mb-3 input-group-sm">
+          <div v-if="cart.total" class="input-group mb-3 input-group-sm">
             <input
               type="text"
               class="form-control"
@@ -267,7 +267,7 @@ export default {
   created() {
     this.getProducts();
     this.getCart();
-    console.log(this.$route);
+    console.log('cart.carts:', this.cart.carts ?? false);
   },
   methods: {
     getProducts() {
@@ -311,7 +311,7 @@ export default {
       this.axios.get(api).then((res) => {
         if (res.data.success) {
           this.isLoading = false;
-          console.log('getCart: ', res);
+          console.log('getCart: ', res.data);
           this.cart = res.data.data;
         }
       });

@@ -11,6 +11,9 @@
             <router-link to="/dashboard/orders" class="nav-link">訂單</router-link>
           </li>
           <li class="nav-item">
+            <router-link to="/dashboard/articles" class="nav-link">文章</router-link>
+          </li>
+          <li class="nav-item">
             <router-link to="/dashboard/coupons" class="nav-link">優惠券</router-link>
           </li>
           <li class="nav-item">
