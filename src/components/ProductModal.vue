@@ -37,6 +37,7 @@
                   type="file"
                   id="customFile"
                   class="form-control"
+                  accept="image/jpeg,image/jpg,image/png"
                 />
               </div>
               <img class="img-fluid mb-2" :src="tempProduct.imageUrl" />
@@ -225,7 +226,8 @@ export default {
   methods: {
     uploadFile() {
       const uploadedFile = this.$refs.imgUpload.files[0];
-      // console.dir(uploadedFile);
+      this.$refs.imgUpload.value = ''; // 清空圖片的值
+      // console.dir('uploadedFile: ', uploadedFile);
       const formData = new FormData();
       // 增加欄位名稱到表單
       formData.append('file-to-upload', uploadedFile);
