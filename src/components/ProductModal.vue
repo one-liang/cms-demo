@@ -154,6 +154,7 @@
                   class="form-control"
                   id="content"
                   placeholder="請輸入產品說明內容"
+                  rows="8"
                 ></textarea>
               </div>
               <div class="mb-3">
