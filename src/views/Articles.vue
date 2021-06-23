@@ -84,21 +84,29 @@ export default {
     getArticles(currentPage = 1) {
       this.currentPage = currentPage;
       const api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/articles?page=${currentPage}`;
+      this.isLoading = true;
       this.axios(api).then((res) => {
         if (res.data.success) {
           console.log('getArticles: ', res.data);
           this.articles = res.data.articles;
           this.pagination = res.data.pagination;
+          this.isLoading = false;
         }
       })
         .catch((error) => console.log(error));
     },
     openModal(isNew, item) {
-      // console.log('openModal: ', isNew, item);
       if (isNew) {
         this.tempArticle = {};
       } else {
-        this.tempArticle = { ...item };
+        const api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/article/${item.id}`;
+        this.axios(api).then((res) => {
+          if (res.data.success) {
+            console.log('get a article: ', res.data);
+            this.tempArticle = res.data.article;
+          }
+        })
+          .catch((error) => console.log(error));
       }
       this.isNew = isNew;
       this.$refs.articleModal.showModal();
